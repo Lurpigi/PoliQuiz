@@ -10,7 +10,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="Record precedente: "
         />
 
     <Button
@@ -24,8 +24,7 @@
         android:id="@+id/imgLogo"
         android:layout_width="229dp"
         android:layout_height="118dp"
-
-         />
+        android:contentDescription="@string/logo" />
 
     <Button
         android:id="@+id/bttInfo"
