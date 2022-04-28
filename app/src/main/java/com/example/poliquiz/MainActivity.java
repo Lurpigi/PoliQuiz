@@ -5,20 +5,17 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 
 public class MainActivity extends AppCompatActivity {
 
-
-    private final String[] PERMISSIONS = new String[] {
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.RECORD_AUDIO
-    };
 
     private final String TAG = "MainActivity";
     private Button bttStart = null;
@@ -34,41 +31,41 @@ public class MainActivity extends AppCompatActivity {
         bttInfo = findViewById(R.id.bttInfo);
         Record = findViewById(R.id.tvRecord);
 
-        if (!hasPermissions(MainActivity.this,PERMISSIONS)) {
-            ActivityCompat.requestPermissions(MainActivity.this,PERMISSIONS,1);
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+
+
+        /*
+        edit highscore
+            SharedPreferences.Editor editor = this.getPreferences(Context.MODE_PRIVATE).edit();
+            editor.putInt(getString(R.string.saved_high_score_key), newHighScore);
+            editor.apply();
+        */
+
+        int defaultValue = getResources().getInteger(R.integer.saved_high_score_default_key);
+        int highScore = sharedPref.getInt(getString(R.string.saved_high_score_key), defaultValue);
+        String newRecord = R.string.record + getString(highScore);
+        Record.setText(newRecord);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.RECORD_AUDIO},
+                    0);
         }
 
-
-
-    }
-
-
-    private boolean hasPermissions(Context context, String... PERMISSIONS) {
-        if (context != null && PERMISSIONS != null)
-            for (String permission: PERMISSIONS)
-                if (ActivityCompat.checkSelfPermission(context,permission) != PackageManager.PERMISSION_GRANTED)
-                    return false;
-        return true;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);//////////////da controllare
-        switch (requestCode) {
-            case 1: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.i("TAG", "permessi approvati");
-
-
-                } else {
-                    Log.i("TAG", "permission denied by user");
-                }
-                return;
+        bttInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG,"premuto info");
             }
-        }
+        });
+
+        bttStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG,"premuto GO!");
+            }
+        });
+
     }
 
 }
