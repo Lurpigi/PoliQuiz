@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         int defaultValue = getResources().getInteger(R.integer.saved_high_score_default_key);
         int highScore = sharedPref.getInt(getString(R.string.saved_high_score_key), defaultValue);
-        String newRecord = R.string.record + getString(highScore);
+        String newRecord = getString(R.string.record) + String.valueOf(highScore);
         Record.setText(newRecord);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {

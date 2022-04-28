@@ -31,7 +31,7 @@
         android:layout_width="192dp"
         android:layout_height="186dp"
         android:layout_marginTop="95dp"
-        android:background="@drawable/RoundedButton"
+        android:background="@drawable/roundedbutton"
         android:text="@string/start"
         android:textSize="60dp" />
 
@@ -40,7 +40,7 @@
         android:id="@+id/bttInfo"
         android:layout_width="63dp"
         android:layout_height="63dp"
-        android:background="@drawable/RoundedButton"
+        android:background="@drawable/roundedbutton"
         app:icon="@android:drawable/ic_menu_help"
         android:layout_marginTop="80dp"
         android:layout_marginLeft="165dp"/>
