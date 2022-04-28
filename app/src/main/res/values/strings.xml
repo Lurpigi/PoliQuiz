@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PoliQuiz</string>
+    <string name="start">START</string>
+    <string name="info">/?</string>
 </resources>
