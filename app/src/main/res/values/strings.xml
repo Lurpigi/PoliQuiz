@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">PoliQuiz</string>
-    <string name="start">START</string>
-    <string name="info">?</string>
-    <string name="logo">logo</string>
+    <string name="start">GO!</string>
+    <string name="logo">Logo</string>
     <string name="record">Record precedente: </string>
+    <color name = "orange" > #ffa500 </color>
     <string name="saved_high_score_key">high_score</string>
 </resources>

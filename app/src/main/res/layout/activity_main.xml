@@ -4,41 +4,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:gravity="center_horizontal">
+    tools:context=".MainActivity"
+    android:background="@drawable/flags">
 
 
     <ImageView
         android:id="@+id/imgLogo"
+        android:layout_width="290dp"
+        android:layout_height="134dp"
         android:layout_marginTop="80dp"
-        android:layout_width="229dp"
-        android:layout_height="118dp"
         android:contentDescription="@string/logo" />
 
     <TextView
         android:id="@+id/tvRecord"
+        android:layout_width="301dp"
+        android:layout_height="37dp"
         android:layout_marginTop="40dp"
-        android:textSize="20sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
         android:text="@string/record"
-        />
+        android:textSize="20dp"/>
 
     <Button
         android:id="@+id/bttStart"
-        android:layout_marginTop="50dp"
-        android:layout_width="155dp"
-        android:layout_height="74dp"
-        android:text="@string/start" />
-
+        android:layout_width="192dp"
+        android:layout_height="186dp"
+        android:layout_marginTop="95dp"
+        android:background="@drawable/RoundedButton"
+        android:text="@string/start"
+        android:textSize="60dp" />
 
 
     <Button
         android:id="@+id/bttInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/info"
-        />
+        android:layout_width="63dp"
+        android:layout_height="63dp"
+        android:background="@drawable/RoundedButton"
+        app:icon="@android:drawable/ic_menu_help"
+        android:layout_marginTop="80dp"
+        android:layout_marginLeft="165dp"/>
 
 </LinearLayout>
