@@ -4,27 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+
+
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_marginTop="80dp"
+        android:layout_width="229dp"
+        android:layout_height="118dp"
+        android:contentDescription="@string/logo" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tvRecord"
+        android:layout_marginTop="40dp"
+        android:textSize="20sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Record precedente: "
+        android:text="@string/record"
         />
 
     <Button
         android:id="@+id/bttStart"
+        android:layout_marginTop="50dp"
         android:layout_width="155dp"
         android:layout_height="74dp"
-        android:text="@string/start"
-         />
+        android:text="@string/start" />
 
-    <ImageView
-        android:id="@+id/imgLogo"
-        android:layout_width="229dp"
-        android:layout_height="118dp"
-        android:contentDescription="@string/logo" />
+
 
     <Button
         android:id="@+id/bttInfo"
