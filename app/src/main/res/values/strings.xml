@@ -1,8 +1,12 @@
 <resources>
     <string name="app_name">PoliQuiz</string>
     <string name="start">GO!</string>
+    <string name="play">Play</string>
     <string name="logo">Logo</string>
     <string name="record">Record precedente: </string>
     <color name = "orange" > #ffa500 </color>
     <string name="saved_high_score_key">high_score</string>
+    <string name="permission_required">You need to grant the permission to use the microphone</string>
+    <string name="repeat">Repeat please</string>
+    <string name="activityGame">com.example.poliquiz.Game</string>
 </resources>

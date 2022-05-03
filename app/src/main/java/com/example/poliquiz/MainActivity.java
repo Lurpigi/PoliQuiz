@@ -5,6 +5,7 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -62,7 +63,10 @@ public class MainActivity extends AppCompatActivity {
         bttStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Log.i(TAG,"premuto GO!");
+                Intent intent = new Intent(getString(R.string.activityGame));
+                startActivity(intent);
             }
         });
 
