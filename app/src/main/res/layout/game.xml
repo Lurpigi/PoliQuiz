@@ -9,19 +9,25 @@
     tools:context=".Game"
     >
 
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/introduction"
+        android:layout_marginTop="30dp"
+        />
     <LinearLayout
 
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
+
         android:visibility="gone"
         android:id="@+id/linearLayout">
 
         <net.gotev.speech.ui.SpeechProgressView
             android:id="@+id/progress"
-            android:layout_marginTop="30dp"
+
             android:layout_width="120dp"
             android:layout_height="150dp"/>
 

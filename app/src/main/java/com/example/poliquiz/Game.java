@@ -1,11 +1,13 @@
 package com.example.poliquiz;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -65,6 +67,18 @@ public class Game extends AppCompatActivity implements SpeechDelegate {
         bttPlay = findViewById(R.id.bttPlay);
         linearLayout = findViewById(R.id.linearLayout);
         bttPlay.setOnClickListener(view -> onButtonClick());
+        text = findViewById(R.id.text);
+
+        progress = findViewById(R.id.progress);
+
+        int[] colors = {
+                ContextCompat.getColor(this, android.R.color.black),
+                ContextCompat.getColor(this, android.R.color.darker_gray),
+                ContextCompat.getColor(this, android.R.color.black),
+                ContextCompat.getColor(this, android.R.color.holo_orange_dark),
+                ContextCompat.getColor(this, android.R.color.holo_red_dark)
+        };
+        progress.setColors(colors);
     }
 
 
@@ -103,13 +117,48 @@ public class Game extends AppCompatActivity implements SpeechDelegate {
             Speech.getInstance().startListening(progress, this);
 
         } catch (SpeechRecognitionNotAvailable exc) {
-            //showSpeechNotSupportedDialog();
+            showSpeechNotSupportedDialog();
 
         } catch (GoogleVoiceTypingDisabledException exc) {
-            //showEnableGoogleVoiceTyping();
+            showEnableGoogleVoiceTyping();
         }
     }
 
+    private void showSpeechNotSupportedDialog() {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        SpeechUtil.redirectUserToGoogleAppOnPlayStore(Game.this);
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.speech_not_available)
+                .setCancelable(false)
+                .setPositiveButton(R.string.yes, dialogClickListener)
+                .setNegativeButton(R.string.no, dialogClickListener)
+                .show();
+    }
+
+    private void showEnableGoogleVoiceTyping() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.enable_google_voice_typing)
+                .setCancelable(false)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // do nothing
+                    }
+                })
+                .show();
+    }
 
 
 
@@ -131,12 +180,13 @@ public class Game extends AppCompatActivity implements SpeechDelegate {
 
         text.setText(result);
 
-        if (result.isEmpty()) {
+       /* if (result.isEmpty()) {
             Speech.getInstance().say(getString(R.string.repeat));
 
         } else {
             Speech.getInstance().say(result);
-        }
+        } */
+        Speech.getInstance().say("Non ho capito un cazzo, sono fatta come una pigna"); //da cambiare
     }
 
     @Override
