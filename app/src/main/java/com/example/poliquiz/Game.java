@@ -180,13 +180,13 @@ public class Game extends AppCompatActivity implements SpeechDelegate {
 
         text.setText(result);
 
-       /* if (result.isEmpty()) {
+        if (result.isEmpty()) {
             Speech.getInstance().say(getString(R.string.repeat));
 
         } else {
             Speech.getInstance().say(result);
-        } */
-        Speech.getInstance().say("Non ho capito un cazzo, sono fatta come una pigna"); //da cambiare
+        }
+        //Speech.getInstance().say("Non ho capito un cazzo, sono fatta come una pigna"); //da cambiare
     }
 
     @Override
@@ -195,5 +195,12 @@ public class Game extends AppCompatActivity implements SpeechDelegate {
         for (String partial : results) {
             text.append(partial + " ");
         }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Speech.getInstance().shutdown();
     }
 }
