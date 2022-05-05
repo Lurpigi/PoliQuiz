@@ -138,9 +138,13 @@ public class Game extends AppCompatActivity implements IRecordingDone {
                         allToFalse();
                         wait.block();
                     }
-                    Log.i(TAG,"gioco finito kohone");
+                    Log.i(TAG,"finito");
                     //TODO: AVVISO PUNTEGGIO; RIGIOCA - HOME
-
+                    Game.this.runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(Game.this, "Gioco finito kohone", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }).start();
 
