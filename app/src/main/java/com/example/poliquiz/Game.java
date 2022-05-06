@@ -99,23 +99,25 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         home = dialog.findViewById(R.id.tornahome);
 
 
-        home.setOnClickListener(view -> onHomeClick());
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
-        retry.setOnClickListener(view -> onRetryClick());
+        retry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getString(R.string.activityGame));
+                startActivity(intent);
+                finish();
+            }
+        });
+
         dialog.show();
     }
 
-    private void onHomeClick(){
-        Intent intent = new Intent(getString(R.string.MainActivity));
-        startActivity(intent);
-        finish();
-    }
-
-    private void onRetryClick(){
-        Intent intent = new Intent(getString(R.string.activityGame));
-        startActivity(intent);
-        finish();
-    }
 
 
     private void onButtonClick() {

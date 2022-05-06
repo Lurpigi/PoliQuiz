@@ -56,7 +56,10 @@ public class MainActivity extends AppCompatActivity {
         bttInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Log.i(TAG,"premuto info");
+                Intent intent = new Intent(getString(R.string.activityInfo));
+                startActivity(intent);
             }
         });
 
