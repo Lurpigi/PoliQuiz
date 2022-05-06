@@ -2,17 +2,19 @@ package com.example.poliquiz;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.Dialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.ConditionVariable;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -23,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import asyncs.Recorder;
-import banners.MyAlertDialogFragment;
 import interfaces.IRecordingDone;
 
 
@@ -32,8 +33,12 @@ public class Game extends AppCompatActivity implements IRecordingDone {
 
     private final int PERMISSIONS_REQUEST = 1;
     private static final String TAG = Game.class.getSimpleName();
-    Button bttPlay = null;
-    ImageButton bttSkip = null;
+    private Button bttPlay = null;
+    private ImageButton bttSkip = null;
+
+    private Button retry = null;
+    private Button home = null;
+
     private String[] parole = {"la","lu"};
     //private volatile boolean skip = false;
     private int punteggio = 0;
@@ -77,6 +82,39 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         ttvStato1.setBackgroundColor(getResources().getColor(R.color.red));
         ttvStato2.setBackgroundColor(getResources().getColor(R.color.red));
         ttvStato3.setBackgroundColor(getResources().getColor(R.color.red));
+    }
+
+    public void showCustomDialog() {
+        final Dialog dialog = new Dialog(this);
+        //We have added a title in the custom layout. So let's disable the default title.
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //The user will be able to cancel the dialog bu clicking anywhere outside the dialog.
+        dialog.setCancelable(false);
+        //Mention the name of the layout of your custom dialog.
+        dialog.setContentView(R.layout.dialog_fine);
+
+        //Initializing the views of the dialog.
+
+        retry = dialog.findViewById(R.id.riprova);
+        home = dialog.findViewById(R.id.tornahome);
+
+
+        home.setOnClickListener(view -> onHomeClick());
+
+        retry.setOnClickListener(view -> onRetryClick());
+        dialog.show();
+    }
+
+    private void onHomeClick(){
+        Intent intent = new Intent(getString(R.string.MainActivity));
+        startActivity(intent);
+        finish();
+    }
+
+    private void onRetryClick(){
+        Intent intent = new Intent(getString(R.string.activityGame));
+        startActivity(intent);
+        finish();
     }
 
 
@@ -165,7 +203,10 @@ public class Game extends AppCompatActivity implements IRecordingDone {
                     //TODO: AVVISO PUNTEGGIO; RIGIOCA - HOME
                     Game.this.runOnUiThread(new Runnable() {
                         public void run() {
-                            Toast.makeText(Game.this, "Gioco finito kohone", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(Game.this, "Gioco finito", Toast.LENGTH_SHORT).show();
+                            bttPlay.setEnabled(false);
+                            bttSkip.setEnabled(false);
+                            showCustomDialog();
                         }
                     });
                 }
