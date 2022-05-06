@@ -81,6 +81,31 @@ public class Recorder {
         }).start();
     }
 
+    //intelligenza artificiale https://www.fon.hum.uva.nl/praat/
+    private float similarity(byte[] registrazione, byte[] corretto){
+        /*
+        int iMatchDataCntr = 0;
+        for (int i = 0; i < registrazione.length; i++) {
+            if (registrazione[i] == corretto[iMatchDataCntr]) {
+                iMatchDataCntr++;
+
+            } else {
+                if (registrazione[i] == corretto[0]) {
+                    iMatchDataCntr = 1;
+                } else {
+                    iMatchDataCntr = 0;
+                }
+
+            }
+
+            if (iMatchDataCntr == corretto.length) {
+                return 1;
+            }
+        }*/
+
+        return 0;
+    }
+
     private void doRecording(){
 
         audioRecord.startRecording();

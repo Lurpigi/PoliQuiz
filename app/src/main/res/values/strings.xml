@@ -10,6 +10,8 @@
     <color name = "orange" > #ffa500 </color>
     <string name="saved_high_score_key">high_score</string>
     <string name="activityGame">com.example.poliquiz.Game</string>
+    <string name="time">03:00</string>
+    <string name="fine">fine!</string>
 
 
     <string name="permission_required">You need to grant the permission to use the microphone</string>

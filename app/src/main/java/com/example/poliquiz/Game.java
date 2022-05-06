@@ -10,6 +10,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.ConditionVariable;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -37,13 +38,14 @@ public class Game extends AppCompatActivity implements IRecordingDone {
     //private volatile boolean skip = false;
     private int punteggio = 0;
 
-
+    private TextView time = null;
     private TextView ttvStato1 = null;
     private TextView ttvStato2 = null;
     private TextView ttvStato3 = null;
     private boolean pri = false;
     private boolean sec = false;
     private boolean ter = false;
+    private boolean fine = false;
     ConditionVariable wait = null;
 
 
@@ -61,6 +63,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         ttvStato1 = findViewById(R.id.statusOne);
         ttvStato2 = findViewById(R.id.statusTwo);
         ttvStato3 = findViewById(R.id.statusThree);
+        time = findViewById(R.id.time);
         allToFalse();
 
 
@@ -128,6 +131,23 @@ public class Game extends AppCompatActivity implements IRecordingDone {
             ttvStato2.setVisibility(View.VISIBLE);
             ttvStato3.setVisibility(View.VISIBLE);
             bttSkip.setVisibility(View.VISIBLE);
+            //3 minuti -> 180 secondi
+            new CountDownTimer(10000, 1000) {
+
+                public void onTick(long millisUntilFinished) {
+                    String sec = String.format("%02d:%02d", ((millisUntilFinished / 1000) / 60), ((millisUntilFinished / 1000) % 60));
+
+                    time.setText(sec);
+                    //here you can have your logic to set text to edittext
+                }
+
+                public void onFinish() {
+                    time.setText(getString(R.string.fine));
+                    fine = true;
+                    wait.open();
+                }
+
+            }.start();
 
             new Thread(new Runnable() {                                         //gioco
                 @Override
@@ -137,6 +157,9 @@ public class Game extends AppCompatActivity implements IRecordingDone {
                         wait.close();
                         allToFalse();
                         wait.block();
+                        if(fine)
+                            break;
+
                     }
                     Log.i(TAG,"finito");
                     //TODO: AVVISO PUNTEGGIO; RIGIOCA - HOME
