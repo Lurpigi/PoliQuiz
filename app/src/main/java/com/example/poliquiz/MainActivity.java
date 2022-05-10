@@ -22,10 +22,10 @@ public class MainActivity extends AppCompatActivity {
     private Button bttStart = null;
     private Button bttInfo = null;
     private TextView Record = null;
-    /*private String[] parole = {"acqua", "asino", "biscotto", "cane", "cuscino", "fuoco", "lupo", "moto", "sedia",
+    private String[] parole = {"acqua", "asino", "biscotto", "cane", "cuscino", "fuoco", "lupo", "moto", "sedia",
             "armadio", "automobile", "borsa", "ciao", "dio", "gatto", "matita", "motore", "sole",
-            "ascensore", "benzina", "calendario", "cinema", "forbici", "luna", "mela", "patata", "televisione"};*/
-    private String[] parole = {"acqua","asino"};
+            "ascensore", "benzina", "calendario", "cinema", "forbici", "luna", "mela", "patata", "televisione", "letto", "mela", "nero", "si"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,15 +40,17 @@ public class MainActivity extends AppCompatActivity {
 
 
         /*
-        edit highscore
+
+            edit highscore
             SharedPreferences.Editor editor = this.getPreferences(Context.MODE_PRIVATE).edit();
             editor.putInt(getString(R.string.saved_high_score_key), newHighScore);
             editor.apply();
+
         */
 
         int defaultValue = getResources().getInteger(R.integer.saved_high_score_default_key);
         int highScore = sharedPref.getInt(getString(R.string.saved_high_score_key), defaultValue);
-        String newRecord = getString(R.string.record) + String.valueOf(highScore);
+        String newRecord = getString(R.string.record) + " " + String.valueOf(highScore);
         Record.setText(newRecord);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {

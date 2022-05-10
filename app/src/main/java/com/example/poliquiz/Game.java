@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -51,6 +52,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
     private String[] parole = null;
     //private volatile boolean skip = false;
     private int punteggio = 0;
+    SharedPreferences.Editor editor;
 
     private ImageView img = null;
     private TextView time = null;
@@ -81,6 +83,8 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         ttvStato3 = findViewById(R.id.statusThree);
         time = findViewById(R.id.time);
 
+        editor = this.getPreferences(this.MODE_PRIVATE).edit();
+
         Intent _intent = getIntent();
         parole = _intent.getStringArrayExtra(getString(R.string.parole));
         allToFalse();
@@ -98,7 +102,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         ttvStato3.setBackgroundColor(getResources().getColor(R.color.red));
     }
 
-    public void showCustomDialog() {
+    public void showCustomDialog(int punteggio) {
         final Dialog dialog = new Dialog(this);
         //We have added a title in the custom layout. So let's disable the default title.
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -107,11 +111,16 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         //Mention the name of the layout of your custom dialog.
         dialog.setContentView(R.layout.dialog_fine);
 
+
         //Initializing the views of the dialog.
 
         retry = dialog.findViewById(R.id.riprova);
         home = dialog.findViewById(R.id.tornahome);
-
+        TextView tmp = dialog.findViewById(R.id.puntfin);
+        if(punteggio == 1)
+            tmp.append(" " + String.valueOf(punteggio) + " punto");
+        else
+            tmp.append(" "+ String.valueOf(punteggio) + " punti");
 
         home.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -239,13 +248,18 @@ public class Game extends AppCompatActivity implements IRecordingDone {
 
                     }
                     Log.i(TAG,"finito");
+
                     //TODO: AVVISO PUNTEGGIO; RIGIOCA - HOME
                     Game.this.runOnUiThread(new Runnable() {
                         public void run() {
+
+                            editor.putInt(getString(R.string.saved_high_score_key), punteggio);
+                            editor.apply();
+
                             //Toast.makeText(Game.this, "Gioco finito", Toast.LENGTH_SHORT).show();
                             bttPlay.setEnabled(false);
                             bttSkip.setEnabled(false);
-                            showCustomDialog();
+                            showCustomDialog(punteggio);
                         }
                     });
                 }
