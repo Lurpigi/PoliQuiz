@@ -49,14 +49,20 @@ public class Game extends AppCompatActivity implements IRecordingDone {
     private Button retry = null;
     private Button home = null;
 
+
+    private String[] lang = {"it","uk","us","jp","de","fr","es","pt","el","du"};
     private String[] parole = null;
     private String cartella = null;
     //private volatile boolean skip = false;
     private int punteggio = 0;
     SharedPreferences.Editor editor;
-
+    private AssetManager am;
     private ImageView img = null;
     private TextView time = null;
+    private ImageView flag1 = null;
+    private ImageView flag2 = null;
+    private ImageView flag3 = null;
+    private ImageView[] flags;
     private TextView ttvStato1 = null;
     private TextView ttvStato2 = null;
     private TextView ttvStato3 = null;
@@ -74,7 +80,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game);
-
+        am = this.getAssets();
         wait = new ConditionVariable();
         img = findViewById(R.id.img);
         bttPlay = findViewById(R.id.bttPlay);
@@ -82,6 +88,10 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         ttvStato1 = findViewById(R.id.statusOne);
         ttvStato2 = findViewById(R.id.statusTwo);
         ttvStato3 = findViewById(R.id.statusThree);
+        flag1 = findViewById(R.id.firstFlag);
+        flag2 = findViewById(R.id.secondFlag);
+        flag3 = findViewById(R.id.thirdFlag);
+        flags = new ImageView[]{flag1, flag2, flag3};
         time = findViewById(R.id.time);
 
         editor = this.getPreferences(this.MODE_PRIVATE).edit();
@@ -181,7 +191,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
 
     private void setEnv(String s){
         cartella = s;
-        AssetManager am = this.getAssets();
+
         runOnUiThread(new Runnable() {
 
             @Override
@@ -190,6 +200,22 @@ public class Game extends AppCompatActivity implements IRecordingDone {
                     InputStream is = am.open("parole/"+s+"/"+s+".jpg");
 
                     Bitmap b = BitmapFactory.decodeStream(is);
+                    int i=0;
+                    for (String lan : lang){
+                        try {
+                            is = am.open("parole/"+s+"/"+lan+".wav");
+                            InputStream istmp = am.open("bandiere/"+lan+".png");
+                            Bitmap f = BitmapFactory.decodeStream(istmp);
+                            flags[i].setImageBitmap(f);
+                            i++;
+                        } catch (IOException ignored) {
+                            ;
+                        } finally {
+                            if (is != null) {
+                                is.close();
+                            }
+                        }
+                    }
 
                     img.setImageBitmap(b);
                     Log.i(TAG,"IMMAGINE"+s+" MESSA");
@@ -280,7 +306,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         bttPlay.setBackground(getDrawable(R.drawable.ic_micred));
         bttPlay.setEnabled(false);
         bttSkip.setEnabled(false);
-        recorder.go(cartella);
+        recorder.go(cartella,am);
 
     }
 

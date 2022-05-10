@@ -4,6 +4,9 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -17,7 +20,12 @@ import android.util.Log;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.poliquiz.MainActivity;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 import Wave.WavIO;
 import interfaces.IRecordingDone;
@@ -62,9 +70,19 @@ public class Recorder {
         return audioRecord!=null;
     }
 
+    public static byte[] readFully(InputStream input) throws IOException
+    {
+        byte[] buffer = new byte[8192];
+        int bytesRead;
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        while ((bytesRead = input.read(buffer)) != -1)
+        {
+            output.write(buffer, 0, bytesRead);
+        }
+        return output.toByteArray();
+    }
 
-
-    public void go(String cartella){
+    public void go(String cartella,AssetManager am){
 
         new Thread(new Runnable() {
             @Override
@@ -77,8 +95,37 @@ public class Recorder {
                     public void run() {
                         // onpostexecute
                         audioRecord.stop();
-                        //TODO prendere 3 file wav qua, richiamare funzione IA sulle 3 e su data
+                        //TODO richiamare funzione IA sulle 3 e su data
 
+                        InputStream[] is = new InputStream[3];
+                        int i=0;
+                        for (String lan : lang){
+                            try {
+                                is[i] = am.open("parole/"+cartella+"/" + lan + ".wav");
+                                i++;
+                                if(i==3)
+                                    break;
+                            } catch (IOException ignored) {
+                                ;
+                            }
+                        }
+
+
+                        try {
+                            byte[] primo = readFully(is[0]);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            byte[] secondo = readFully(is[1]);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            byte[] terzo = readFully(is[2]);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 
                         //int result = similarity(x,y);
 
