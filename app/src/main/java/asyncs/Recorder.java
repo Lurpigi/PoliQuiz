@@ -27,9 +27,12 @@ public class Recorder {
 
     private final String TAG = "Recorder";
 
+    private String[] lang = {"it","uk","us","jp","de","fr","es","pt","el","du"};
     private int recordingLenth;
     private int Fs;             //Frequenza in Hz
     private int nSamples;
+    private String parola;
+
     private Activity activity;
     private IRecordingDone iRecordingDone;
 
@@ -61,19 +64,25 @@ public class Recorder {
 
 
 
-    public void go(){
+    public void go(String cartella){
+
         new Thread(new Runnable() {
             @Override
             public void run() {
                 //doinbackground
-                doRecording();
+                byte[] datab = doRecording();
 
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         // onpostexecute
                         audioRecord.stop();
-                        iRecordingDone.onRecordingDone(1, audioData);
+                        //TODO prendere 3 file wav qua, richiamare funzione IA sulle 3 e su data
+
+
+                        //int result = similarity(x,y);
+
+                        iRecordingDone.onRecordingDone(-1, audioData);
 
                     }
                 });
@@ -83,37 +92,19 @@ public class Recorder {
 
     //intelligenza artificiale https://www.fon.hum.uva.nl/praat/
     private float similarity(byte[] registrazione, byte[] corretto){
-        /*
-        int iMatchDataCntr = 0;
-        for (int i = 0; i < registrazione.length; i++) {
-            if (registrazione[i] == corretto[iMatchDataCntr]) {
-                iMatchDataCntr++;
 
-            } else {
-                if (registrazione[i] == corretto[0]) {
-                    iMatchDataCntr = 1;
-                } else {
-                    iMatchDataCntr = 0;
-                }
-
-            }
-
-            if (iMatchDataCntr == corretto.length) {
-                return 1;
-            }
-        }*/
 
         return 0;
     }
 
-    private void doRecording(){
+    private byte[] doRecording(){
 
         audioRecord.startRecording();
         audioRecord.read(audioData,0,nSamples);
 
 
         byte[] dataByte = short2byte(audioData);
-
+        return dataByte;
 
 
     }

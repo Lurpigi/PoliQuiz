@@ -50,6 +50,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
     private Button home = null;
 
     private String[] parole = null;
+    private String cartella = null;
     //private volatile boolean skip = false;
     private int punteggio = 0;
     SharedPreferences.Editor editor;
@@ -174,11 +175,12 @@ public class Game extends AppCompatActivity implements IRecordingDone {
 
         Collections.addAll(random, parole);
         Collections.shuffle(random);
-        //random.get(0)
+
         return random;
     }
 
     private void setEnv(String s){
+        cartella = s;
         AssetManager am = this.getAssets();
         runOnUiThread(new Runnable() {
 
@@ -249,7 +251,6 @@ public class Game extends AppCompatActivity implements IRecordingDone {
                     }
                     Log.i(TAG,"finito");
 
-                    //TODO: AVVISO PUNTEGGIO; RIGIOCA - HOME
                     Game.this.runOnUiThread(new Runnable() {
                         public void run() {
 
@@ -278,7 +279,8 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         Log.i(TAG,"start recording");
         bttPlay.setBackground(getDrawable(R.drawable.ic_micred));
         bttPlay.setEnabled(false);
-        recorder.go();
+        bttSkip.setEnabled(false);
+        recorder.go(cartella);
 
     }
 
@@ -289,7 +291,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
     public void onRecordingDone(int result, short[] audioData) {
         Log.i(TAG,"onRecordingDone");
         bttPlay.setBackground(getDrawable(R.drawable.ic_mic));
-        result = -1;        //da cancellare
+
         switch(result){            //risultato
             case 0:
                 if(!pri) {
@@ -314,6 +316,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
                 break;
         }
         bttPlay.setEnabled(true);
+        bttSkip.setEnabled(true);
         if(pri && sec && ter)
             wait.open();
     }
