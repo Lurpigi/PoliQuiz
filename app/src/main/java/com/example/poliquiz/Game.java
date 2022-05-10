@@ -9,6 +9,9 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.ConditionVariable;
 import android.os.CountDownTimer;
@@ -17,10 +20,16 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -39,10 +48,11 @@ public class Game extends AppCompatActivity implements IRecordingDone {
     private Button retry = null;
     private Button home = null;
 
-    private String[] parole = {"la","lu"};
+    private String[] parole = null;
     //private volatile boolean skip = false;
     private int punteggio = 0;
 
+    private ImageView img = null;
     private TextView time = null;
     private TextView ttvStato1 = null;
     private TextView ttvStato2 = null;
@@ -63,12 +73,16 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         setContentView(R.layout.game);
 
         wait = new ConditionVariable();
+        img = findViewById(R.id.img);
         bttPlay = findViewById(R.id.bttPlay);
         bttSkip = findViewById(R.id.bttSkip);
         ttvStato1 = findViewById(R.id.statusOne);
         ttvStato2 = findViewById(R.id.statusTwo);
         ttvStato3 = findViewById(R.id.statusThree);
         time = findViewById(R.id.time);
+
+        Intent _intent = getIntent();
+        parole = _intent.getStringArrayExtra(getString(R.string.parole));
         allToFalse();
 
 
@@ -102,6 +116,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dialog.dismiss();
                 finish();
             }
         });
@@ -111,6 +126,8 @@ public class Game extends AppCompatActivity implements IRecordingDone {
             public void onClick(View view) {
                 Intent intent = new Intent(getString(R.string.activityGame));
                 startActivity(intent);
+                intent.putExtra(getString(R.string.parole), parole);
+                dialog.dismiss();
                 finish();
             }
         });
@@ -153,6 +170,26 @@ public class Game extends AppCompatActivity implements IRecordingDone {
     }
 
     private void setEnv(String s){
+        AssetManager am = this.getAssets();
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    InputStream is = am.open("parole/"+s+"/"+s+".jpg");
+
+                    Bitmap b = BitmapFactory.decodeStream(is);
+
+                    img.setImageBitmap(b);
+                    Log.i(TAG,"IMMAGINE"+s+" MESSA");
+                } catch (IOException e) {
+                    Log.i(TAG,"IMMAGINE"+s+"NON MESSA");
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
 
     }
 
@@ -172,7 +209,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
             ttvStato3.setVisibility(View.VISIBLE);
             bttSkip.setVisibility(View.VISIBLE);
             //3 minuti -> 180 secondi
-            new CountDownTimer(10000, 1000) {
+            new CountDownTimer(180_000, 1000) {
 
                 public void onTick(long millisUntilFinished) {
                     String sec = String.format("%02d:%02d", ((millisUntilFinished / 1000) / 60), ((millisUntilFinished / 1000) % 60));

@@ -22,6 +22,10 @@ public class MainActivity extends AppCompatActivity {
     private Button bttStart = null;
     private Button bttInfo = null;
     private TextView Record = null;
+    /*private String[] parole = {"acqua", "asino", "biscotto", "cane", "cuscino", "fuoco", "lupo", "moto", "sedia",
+            "armadio", "automobile", "borsa", "ciao", "dio", "gatto", "matita", "motore", "sole",
+            "ascensore", "benzina", "calendario", "cinema", "forbici", "luna", "mela", "patata", "televisione"};*/
+    private String[] parole = {"acqua","asino"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,9 +73,12 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.i(TAG,"premuto GO!");
                 Intent intent = new Intent(getString(R.string.activityGame));
+                intent.putExtra(getString(R.string.parole), parole);
                 startActivity(intent);
             }
         });
+
+
 
     }
 
