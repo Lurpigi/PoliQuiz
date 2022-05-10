@@ -26,9 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -50,8 +48,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
     private Button home = null;
 
 
-    private String[] lang = {"it","uk","us","jp","de","fr","es","pt","el","du"};
-    private String[] parole = null;
+
     private String cartella = null;
     //private volatile boolean skip = false;
     private int punteggio = 0;
@@ -97,7 +94,6 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         editor = this.getPreferences(this.MODE_PRIVATE).edit();
 
         Intent _intent = getIntent();
-        parole = _intent.getStringArrayExtra(getString(R.string.parole));
         allToFalse();
 
 
@@ -145,9 +141,8 @@ public class Game extends AppCompatActivity implements IRecordingDone {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getString(R.string.activityGame));
-                startActivity(intent);
-                intent.putExtra(getString(R.string.parole), parole);
                 dialog.dismiss();
+                startActivity(intent);
                 finish();
             }
         });
@@ -183,7 +178,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
     private ArrayList<String> randomP(){
         ArrayList<String> random = new ArrayList<String>();
 
-        Collections.addAll(random, parole);
+        Collections.addAll(random, MainActivity.parole);
         Collections.shuffle(random);
 
         return random;
@@ -201,7 +196,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
 
                     Bitmap b = BitmapFactory.decodeStream(is);
                     int i=0;
-                    for (String lan : lang){
+                    for (String lan : MainActivity.lang){
                         try {
                             is = am.open("parole/"+s+"/"+lan+".wav");
                             InputStream istmp = am.open("bandiere/"+lan+".png");

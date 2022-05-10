@@ -2,28 +2,23 @@ package asyncs;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
+
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 
-import android.os.Build;
-import android.os.Environment;
-import android.os.storage.StorageManager;
-import android.util.Log;
 
 
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+
 
 import com.example.poliquiz.MainActivity;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -35,7 +30,6 @@ public class Recorder {
 
     private final String TAG = "Recorder";
 
-    private String[] lang = {"it","uk","us","jp","de","fr","es","pt","el","du"};
     private int recordingLenth;
     private int Fs;             //Frequenza in Hz
     private int nSamples;
@@ -99,7 +93,7 @@ public class Recorder {
 
                         InputStream[] is = new InputStream[3];
                         int i=0;
-                        for (String lan : lang){
+                        for (String lan : MainActivity.lang){
                             try {
                                 is[i] = am.open("parole/"+cartella+"/" + lan + ".wav");
                                 i++;

@@ -22,9 +22,10 @@ public class MainActivity extends AppCompatActivity {
     private Button bttStart = null;
     private Button bttInfo = null;
     private TextView Record = null;
-    private String[] parole = {"acqua", "asino", "biscotto", "cane", "cuscino", "fuoco", "lupo", "moto", "sedia",
+    public static String[] parole = {"acqua", "asino", "biscotto", "cane", "cuscino", "fuoco", "lupo", "moto", "sedia",
             "armadio", "automobile", "borsa", "ciao", "dio", "gatto", "matita", "motore", "sole",
             "ascensore", "benzina", "calendario", "cinema", "forbici", "luna", "mela", "patata", "televisione", "letto", "mela", "nero", "si"};
+    public static String[] lang = {"it","uk","us","jp","de","fr","es","pt","el","du"};
 
 
     @Override
@@ -75,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.i(TAG,"premuto GO!");
                 Intent intent = new Intent(getString(R.string.activityGame));
-                intent.putExtra(getString(R.string.parole), parole);
                 startActivity(intent);
             }
         });
