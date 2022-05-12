@@ -6,16 +6,22 @@
     <string name="punteggio">Il tuo punteggio è di </string>
     <string name="retry">Riprova</string>
     <string name="home">Torna alla Home</string>
+    <string name="casa">Home</string>
     <string name="record">Record precedente: </string>
-    <color name = "giallo_brutto" > #E5BE01 </color>
+    <string name="regole">Benvenuto al Poliquiz!\n\nMetti alla prova le tue capacit\à linguistiche
+            pronunciando 30 parole in diverse lingue: avviando la partita avrai a disposizione
+            3 minuti per cercare di fare pi\ù punti possibile. Ogni volta che premerai l\'icona del
+            microfono avrai 3 secondi per provare a dire cosa vedi nell\'immagine in una delle 3 lingue proposte.
+            Puoi anche saltare all\'immagine successiva, ma non si torna indietro!</string>
     <string name="saved_high_score_key">high_score</string>
     <string name="activityGame">com.example.poliquiz.Game</string>
     <string name="MainActivity">com.example.poliquiz.MainActivity</string>
     <string name="activityInfo">com.example.poliquiz.Info</string>
     <string name="time">03:00</string>
     <string name="fine">fine!</string>
-    <string name="finedialog">fine del Quiz!</string>
+    <string name="finedialog">Fine del Quiz!</string>
     <string name="parole">parole</string>
+    <string name="puntodidomanda">\?</string>
 
 
 
