@@ -7,7 +7,7 @@
     <string name="retry">Riprova</string>
     <string name="home">Torna alla Home</string>
     <string name="record">Record precedente: </string>
-    <color name = "orange" > #ffa500 </color>
+    <color name = "giallo_brutto" > #E5BE01 </color>
     <string name="saved_high_score_key">high_score</string>
     <string name="activityGame">com.example.poliquiz.Game</string>
     <string name="MainActivity">com.example.poliquiz.MainActivity</string>
