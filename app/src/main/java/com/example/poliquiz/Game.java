@@ -299,6 +299,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         // pre execute
         Log.i(TAG,"start recording");
         bttPlay.setBackground(getDrawable(R.drawable.ic_micred));
+        //bttPlay.setBackgroundColor(getResources().getColor(R.color.red));
         bttPlay.setEnabled(false);
         bttSkip.setEnabled(false);
         recorder.go(cartella,am);
@@ -312,6 +313,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
     public void onRecordingDone(int result, short[] audioData) {
         Log.i(TAG,"onRecordingDone");
         bttPlay.setBackground(getDrawable(R.drawable.ic_mic));
+        //bttPlay.setBackgroundColor(getResources().getColor(R.color.giallo_brutto));
 
         switch(result){            //risultato
             case 0:
