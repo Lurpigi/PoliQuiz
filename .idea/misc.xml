@@ -3,12 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/super/OneDrive/Documents/UNI/terzo anno/IOT/PoliQuiz/app/src/main/res/drawable/RoundedButton.xml" value="0.2985" />
-        <entry key="..\:/Users/super/OneDrive/Documents/UNI/terzo anno/IOT/PoliQuiz/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2265" />
-        <entry key="..\:/Users/super/OneDrive/Documents/UNI/terzo anno/IOT/PoliQuiz/app/src/main/res/layout/activity_main.xml" value="0.358695652173913" />
-        <entry key="..\:/Users/super/OneDrive/Documents/UNI/terzo anno/IOT/PoliQuiz/app/src/main/res/layout/dialog_fine.xml" value="0.18541666666666667" />
-        <entry key="..\:/Users/super/OneDrive/Documents/UNI/terzo anno/IOT/PoliQuiz/app/src/main/res/layout/game.xml" value="0.28541666666666665" />
-        <entry key="..\:/Users/super/OneDrive/Documents/UNI/terzo anno/IOT/PoliQuiz/app/src/main/res/layout/info.xml" value="0.3605072463768116" />
+        <entry key="..\:/Users/PC/AndroidStudioProjects/PoliQuiz/app/src/main/res/drawable/RoundedButton.xml" value="0.2265" />
+        <entry key="..\:/Users/PC/AndroidStudioProjects/PoliQuiz/app/src/main/res/drawable/roundedbutton.xml" value="0.2265" />
+        <entry key="..\:/Users/PC/AndroidStudioProjects/PoliQuiz/app/src/main/res/layout/activity_main.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/PC/AndroidStudioProjects/PoliQuiz/app/src/main/res/layout/game.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/PC/AndroidStudioProjects/PoliQuiz/app/src/main/res/layout/info.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/PC/AndroidStudioProjects/PoliQuiz/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2265" />
+        <entry key="..\:/Users/PC/AndroidStudioProjects/PoliQuiz/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.2265" />
       </map>
     </option>
   </component>

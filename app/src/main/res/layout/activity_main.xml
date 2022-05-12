@@ -40,7 +40,6 @@
         android:layout_height="186dp"
         android:layout_marginTop="95dp"
         android:background="@drawable/roundedbutton"
-        android:backgroundTint="@color/giallo_brutto"
         android:text="@string/start"
         android:textColor="@color/black"
         android:textSize="60dp" />
@@ -53,7 +52,6 @@
         android:layout_marginLeft="160dp"
         android:layout_marginTop="80dp"
         android:background="@drawable/roundedbutton"
-        android:backgroundTint="@color/giallo_brutto"
         android:text="\?"
         android:textColor="@color/black"
         android:textSize="30dp" />
