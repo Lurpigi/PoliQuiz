@@ -9,13 +9,16 @@ import android.content.res.AssetManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
-
+import android.util.Log;
 
 
 import androidx.core.app.ActivityCompat;
 
 
 import com.example.poliquiz.MainActivity;
+import com.musicg.fingerprint.FingerprintSimilarity;
+import com.musicg.wave.Wave;
+import com.musicg.wave.WaveHeader;
 
 import java.io.ByteArrayOutputStream;
 
@@ -89,7 +92,6 @@ public class Recorder {
                     public void run() {
                         // onpostexecute
                         audioRecord.stop();
-                        //TODO richiamare funzione IA sulle 3 e su data
 
                         InputStream[] is = new InputStream[3];
                         int i=0;
@@ -103,25 +105,30 @@ public class Recorder {
                                 ;
                             }
                         }
+                        byte[] primo=null;
+                        byte[] secondo=null;
+                        byte[] terzo=null;
 
 
                         try {
-                            byte[] primo = readFully(is[0]);
+                            primo = readFully(is[0]);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                         try {
-                            byte[] secondo = readFully(is[1]);
+                            secondo = readFully(is[1]);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                         try {
-                            byte[] terzo = readFully(is[2]);
+                            terzo = readFully(is[2]);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
 
-                        //int result = similarity(x,y);
+                        float punt1 = similarity(datab,primo);
+                        float punt2 = similarity(datab,secondo);
+                        float punt3 = similarity(datab,terzo);
 
                         iRecordingDone.onRecordingDone(-1, audioData);
 
@@ -134,8 +141,23 @@ public class Recorder {
     //intelligenza artificiale https://www.fon.hum.uva.nl/praat/
     private float similarity(byte[] registrazione, byte[] corretto){
 
+        //TODO inizializzarli
+        Wave w1 = new Wave(new WaveHeader(),registrazione);
+        Wave w2 = new Wave(new WaveHeader(),corretto);
 
-        return 0;
+
+        FingerprintSimilarity fpsc1 = w2.getFingerprintSimilarity(w1);
+
+        float scorec = fpsc1.getScore();
+        float simc= fpsc1.getSimilarity();
+
+        Log.e(TAG,"score: "+scorec+"similarity: "+simc);
+
+
+
+
+
+        return -1;
     }
 
     private byte[] doRecording(){
