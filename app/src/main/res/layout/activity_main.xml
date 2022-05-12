@@ -26,23 +26,26 @@
         android:text="@string/record"
         android:textSize="20dp"/>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/bttStart"
         android:layout_width="192dp"
         android:layout_height="186dp"
         android:layout_marginTop="95dp"
         android:background="@drawable/roundedbutton"
+        android:backgroundTint="@color/black"
         android:text="@string/start"
-        android:textSize="60dp" />
+        android:textSize="60dp"
+        app:iconTint="#000000" />
 
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/bttInfo"
         android:layout_width="63dp"
         android:layout_height="63dp"
+        android:layout_marginLeft="165dp"
+        android:layout_marginTop="80dp"
         android:background="@drawable/roundedbutton"
         app:icon="@android:drawable/ic_menu_help"
-        android:layout_marginTop="80dp"
-        android:layout_marginLeft="165dp"/>
+        android:backgroundTint="@color/black" />
 
 </LinearLayout>
