@@ -7,15 +7,21 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     tools:context=".MainActivity"
-    android:background="@drawable/flags">
+    android:background="@color/giallo_brutto">
 
 
-    <ImageView
-        android:id="@+id/imgLogo"
+    <TextView
+        android:id="@+id/tvLogo"
         android:layout_width="290dp"
         android:layout_height="134dp"
         android:layout_marginTop="80dp"
-        android:contentDescription="@string/logo" />
+        android:gravity="center"
+        android:text="Poliquiz!"
+        android:fontFamily="sans-serif-black"
+        android:textStyle="italic"
+        android:textSize="70dp"
+        android:textColor="@color/black"
+        />
 
     <TextView
         android:id="@+id/tvRecord"
@@ -24,7 +30,8 @@
         android:layout_marginTop="40dp"
         android:layout_marginRight="20dp"
         android:text="@string/record"
-        android:textSize="20dp"/>
+        android:textSize="30dp"
+        android:textColor="@color/black"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/bttStart"
@@ -35,17 +42,19 @@
         android:backgroundTint="@color/black"
         android:text="@string/start"
         android:textSize="60dp"
-        app:iconTint="#000000" />
+        android:textColor="#ffffff" />
 
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/bttInfo"
         android:layout_width="63dp"
         android:layout_height="63dp"
-        android:layout_marginLeft="165dp"
+        android:layout_marginLeft="160dp"
         android:layout_marginTop="80dp"
         android:background="@drawable/roundedbutton"
-        app:icon="@android:drawable/ic_menu_help"
-        android:backgroundTint="@color/black" />
+        android:backgroundTint="@color/black"
+        android:text="\?"
+        android:textSize="30dp"
+        android:textColor="#ffffff" />
 
 </LinearLayout>
