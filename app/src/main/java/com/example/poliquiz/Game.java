@@ -70,7 +70,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
     ConditionVariable wait = null;
 
 
-    private final int recordinLength = 5; // 5 secondi
+    private final int recordinLength = 2; // 5 secondi
     private final int Fs = 44100; //Hz
 
     @Override
