@@ -19,13 +19,15 @@ import com.example.poliquiz.MainActivity;
 import com.musicg.fingerprint.FingerprintSimilarity;
 import com.musicg.wave.Wave;
 import com.musicg.wave.WaveHeader;
+import com.sun.media.sound.FFT;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import Wave.WavIO;
+import complex.Complex;
 import interfaces.IRecordingDone;
 
 public class Recorder {
@@ -138,6 +140,8 @@ public class Recorder {
         }).start();
     }
 
+
+
     //intelligenza artificiale https://www.fon.hum.uva.nl/praat/
     private float similarity(byte[] registrazione, byte[] corretto){
 
@@ -151,7 +155,7 @@ public class Recorder {
         float scorec = fpsc1.getScore();
         float simc= fpsc1.getSimilarity();
 
-        Log.e(TAG,"score: "+scorec+"similarity: "+simc);
+        Log.e(TAG,"score: "+scorec+" similarity: "+simc);
 
 
 
