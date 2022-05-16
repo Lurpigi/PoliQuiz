@@ -141,6 +141,28 @@ public class Recorder {
     }
 
 
+    int DTWDistance(byte[] reg, byte[] cor, int w) {
+        byte[][] DTW = new byte[reg.length][cor.length];
+
+        w = Math.max(w, Math.abs(reg.length-cor.length));
+
+        for i := 0 to n
+        for j:= 0 to m
+        DTW[i, j] := infinity
+        DTW[0, 0] := 0
+        for i := 1 to n
+        for j := max(1, i-w) to min(m, i+w)
+        DTW[i, j] := 0
+
+        for i := 1 to n
+        for j := max(1, i-w) to min(m, i+w)
+        cost := d(s[i], t[j])
+        DTW[i, j] := cost + minimum(DTW[i-1, j  ],    // insertion
+        DTW[i  , j-1],    // deletion
+        DTW[i-1, j-1])    // match
+        return DTW[n, m]
+    }
+
 
     //intelligenza artificiale https://www.fon.hum.uva.nl/praat/
     private float similarity(byte[] registrazione, byte[] corretto){
