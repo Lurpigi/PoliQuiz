@@ -63,6 +63,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
     private TextView ttvStato1 = null;
     private TextView ttvStato2 = null;
     private TextView ttvStato3 = null;
+    private InputStream iscertificate;
     private boolean pri = false;
     private boolean sec = false;
     private boolean ter = false;
@@ -90,6 +91,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         flag3 = findViewById(R.id.thirdFlag);
         flags = new ImageView[]{flag1, flag2, flag3};
         time = findViewById(R.id.time);
+        iscertificate = getResources().openRawResource(R.raw.credential);
 
         editor = this.getPreferences(this.MODE_PRIVATE).edit();
 
@@ -225,10 +227,11 @@ public class Game extends AppCompatActivity implements IRecordingDone {
 
     }
 
+
     //inizio gioco
     private void onRecordAudioPermissionGranted() {
 
-        Recorder recorder = new Recorder(this, this, recordinLength, Fs );
+        Recorder recorder = new Recorder(this, this, recordinLength, Fs, this);
         if(recorder.isAudioRecordInitialized()){
             Log.i(TAG,"creato oggetto recorder");
             ArrayList<String> parolepartita = randomP();

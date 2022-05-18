@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     public static String[] parole = {"acqua", "asino", "biscotto", "cane", "cuscino", "fuoco", "lupo", "moto", "sedia",
             "armadio", "automobile", "borsa", "ciao", "dio", "gatto", "matita", "motore", "sole",
             "ascensore", "benzina", "calendario", "cinema", "forbici", "luna", "mela", "patata", "televisione", "letto", "mela", "nero", "si"};
-    public static String[] lang = {"it","uk","us","jp","de","fr","es","pt","el","du","ar","ru"};
+    public static String[] lang = {"it","gb","us","jp","de","fr","es","pt","gr","nl","sa","ru"};
 
 
     @Override
