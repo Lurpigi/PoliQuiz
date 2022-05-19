@@ -184,9 +184,9 @@ public class Recorder {
                         try {
 
                             voce = speech_services.transcribeMultiLanguage(datab,lans);
-                            ris1 = speech_services.transcribeMultiLanguageWav(primo,lans);
-                            ris2 = speech_services.transcribeMultiLanguageWav(secondo,lans);
-                            ris3 = speech_services.transcribeMultiLanguageWav(terzo,lans);
+                            ris1 = speech_services.transcribeMultiLanguage(primo,lans);
+                            ris2 = speech_services.transcribeMultiLanguage(secondo,lans);
+                            ris3 = speech_services.transcribeMultiLanguage(terzo,lans);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

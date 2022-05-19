@@ -79,7 +79,47 @@ public class Speech_Services {
                 return alternative.getTranscript();
             }
         }catch (Exception e) {
-            e.printStackTrace();
+            try{
+                SpeechClient speechClient = SpeechClient.create(settings);
+                RecognitionAudio recognitionAudio =
+                        RecognitionAudio.newBuilder().setContent(ByteString.copyFrom(content)).build();
+
+
+                // Configure request to enable multiple languages
+                RecognitionConfig config =
+                        RecognitionConfig.newBuilder()
+                                .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
+                                .setAudioChannelCount(2)
+                                .setEnableSeparateRecognitionPerChannel(true)
+                                .setLanguageCode(languageList.get(0))
+                                .addAllAlternativeLanguageCodes(alternativelan)
+                                .build();
+                // Perform the transcription request
+
+                //RecognizeResponse recognizeResponse = speechClient.recognize(config, recognitionAudio);
+
+                OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response =
+                        speechClient.longRunningRecognizeAsync(config, recognitionAudio);
+
+                while (!response.isDone()) {
+                    //System.out.println("Waiting for response...");
+                    //Thread.sleep(1000);
+                    ;
+                }
+
+                List<SpeechRecognitionResult> results = response.get().getResultsList();
+
+                // Print out the results
+                for (/*SpeechRecognitionResult result : recognizeResponse.getResultsList()*/SpeechRecognitionResult result : results) {
+                    // There can be several alternative transcripts for a given chunk of speech. Just use the
+                    // first (most likely) one here.
+                    SpeechRecognitionAlternative alternative = result.getAlternatives(0);
+                    Log.e(TAG,"Transcript : " + alternative.getTranscript());
+                    return alternative.getTranscript();
+                }
+            }catch (Exception e2) {
+                e2.printStackTrace();
+            }
         }
         return null;
     }
