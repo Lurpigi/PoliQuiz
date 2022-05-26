@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -71,6 +72,10 @@ public class Game extends AppCompatActivity implements IRecordingDone {
     private boolean ter = false;
     private boolean fine = false;
     ConditionVariable wait = null;
+    private String[] PERMISSIONS = new String[] {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.RECORD_AUDIO
+    };
 
 
     private final int recordinLength = 1; // 5 secondi
@@ -161,24 +166,38 @@ public class Game extends AppCompatActivity implements IRecordingDone {
 
 
     private void onButtonClick() {
-        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) ) {
-            onRecordAudioPermissionGranted();
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST);
+        if (!hasPermissions(Game.this,PERMISSIONS)) {
+            ActivityCompat.requestPermissions(Game.this,PERMISSIONS,1);
         }
+        else
+            onRecordAudioPermissionGranted();
+    }
+
+    private boolean hasPermissions(Context context, String... PERMISSIONS) {
+        if (context != null && PERMISSIONS != null)
+            for (String permission: PERMISSIONS)
+                if (ActivityCompat.checkSelfPermission(context,permission) != PackageManager.PERMISSION_GRANTED)
+                    return false;
+        return true;
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode != PERMISSIONS_REQUEST) {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        } else {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // permission was granted, yay!
-                onRecordAudioPermissionGranted();
-            } else {
-                // permission denied, boo!
-                Toast.makeText(this, R.string.permission_required, Toast.LENGTH_LONG).show();
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.i("TAG", "permessi approvati");
+                    onRecordAudioPermissionGranted();
+
+                } else {
+                    Log.i("TAG", "permission denied by user");
+                    Toast.makeText(this, R.string.permission_required, Toast.LENGTH_LONG).show();
+                }
+                return;
             }
         }
     }

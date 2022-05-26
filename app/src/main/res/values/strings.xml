@@ -26,6 +26,6 @@
 
 
 
-    <string name="permission_required">You need to grant the permission to use the microphone</string>
+    <string name="permission_required">You need to grant the permission to use the microphone and save your recording</string>
 
 </resources>

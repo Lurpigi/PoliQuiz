@@ -10,6 +10,7 @@ import android.content.res.AssetManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.os.Environment;
 import android.util.Log;
 
 
@@ -30,12 +31,14 @@ import com.google.protobuf.ByteString;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import Wave.WavIO;
 import interfaces.IRecordingDone;
 import mffc.neuralInt;
 import speech_services.Speech_Services;
@@ -56,6 +59,8 @@ public class Recorder {
     private String ris1 = null;
     private String ris2 = null;
     private String ris3 = null;
+    private String FILE_NAME ="Rec.wav";
+    private final String PATH = "CANCELLAMI";
 
     private Activity activity;
     private IRecordingDone iRecordingDone;
@@ -88,20 +93,6 @@ public class Recorder {
 
     public boolean isAudioRecordInitialized(){
         return audioRecord!=null;
-    }
-
-
-
-    public static byte[] readFully(InputStream input) throws IOException
-    {
-        byte[] buffer = new byte[8192];
-        int bytesRead;
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        while ((bytesRead = input.read(buffer)) != -1)
-        {
-            output.write(buffer, 0, bytesRead);
-        }
-        return output.toByteArray();
     }
 
     public void go(String cartella,AssetManager am){
@@ -168,9 +159,18 @@ public class Recorder {
 
 
                         try{
-                            neuralInt n = new neuralInt();
-                            voce = n.recognize(datab,c);
+                            // datab in WAV
+                            String _storeDir = Environment.getExternalStorageDirectory() + "/" + PATH;
+                            File f = new File(_storeDir);
+                            if(!f.exists())
+                                if(!f.mkdir())
+                                    Log.e(TAG,"Creazione cartella "+PATH+" non riuscita");
+                            String _fullPath = _storeDir + "/" + FILE_NAME;
+                            WavIO wavIo = new WavIO(_fullPath, 16, 1, 1, Fs, 2, 16, datab);
+                            wavIo.save();
 
+                            // chiamarci classe request
+                            //
                             Log.e(TAG,voce);
                         } catch (Exception e) {
                             e.printStackTrace();
