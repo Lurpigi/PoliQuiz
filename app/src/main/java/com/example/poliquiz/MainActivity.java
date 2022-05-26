@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,10 +23,9 @@ public class MainActivity extends AppCompatActivity {
     private Button bttStart = null;
     private Button bttInfo = null;
     private TextView Record = null;
-    public static String[] parole = {"acqua", "asino", "biscotto", "cane", "cuscino", "fuoco", "lupo", "moto", "sedia",
-            "armadio", "automobile", "borsa", "ciao", "dio", "gatto", "matita", "motore", "sole",
-            "ascensore", "benzina", "calendario", "cinema", "forbici", "luna", "mela", "patata", "televisione", "letto", "mela", "nero", "si"};
-    public static String[] lang = {"it","gb","us","jp","de","fr","es","pt","gr","nl","sa","ru"};
+    public static String[] parole = {"acqua", "asino", "borsa", "calendario", "cane", "cuore", "letto", "lupo", "patata", "sole"};
+    public static String[] lang = {"us","fr","es"};
+    int highScore;
 
 
     @Override
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         */
 
         int defaultValue = getResources().getInteger(R.integer.saved_high_score_default_key);
-        int highScore = sharedPref.getInt(getString(R.string.saved_high_score_key), defaultValue);
+        highScore = sharedPref.getInt(getString(R.string.saved_high_score_key), defaultValue);
         String newRecord = getString(R.string.record) + " " + String.valueOf(highScore);
         Record.setText(newRecord);
 
@@ -76,12 +76,36 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.i(TAG,"premuto GO!");
                 Intent intent = new Intent(getString(R.string.activityGame));
-                startActivity(intent);
+                startActivityForResult(intent,42);
             }
         });
 
 
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode,resultCode,data);
+
+        if(requestCode == 42){
+            if(resultCode == Activity.RESULT_OK){
+                String _s = data.getStringExtra(getString(R.string.passpunt));
+                if(Integer.parseInt(_s) > highScore){
+                    String newRecord = getString(R.string.record) + " " + _s;
+                    Record.setText(newRecord);
+                    SharedPreferences.Editor editor = this.getPreferences(this.MODE_PRIVATE).edit();
+                    editor.putInt(getString(R.string.saved_high_score_key), Integer.parseInt(_s));
+                    editor.apply();
+                }
+
+            }else{
+                Log.i(TAG,"Request code Not OK");
+            }
+
+        }else{
+            Log.i(TAG,"Request code error");
+        }
     }
 
 }

@@ -27,14 +27,17 @@ import com.google.cloud.speech.v1.SpeechRecognitionResult;
 import com.google.protobuf.ByteString;
 
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Locale;
 
 import interfaces.IRecordingDone;
+import mffc.neuralInt;
 import speech_services.Speech_Services;
 
 
@@ -50,10 +53,6 @@ public class Recorder {
     private Context c;
 
 
-    private static final String PREFS = "SpeechService";
-    private static final String PREF_ACCESS_TOKEN_VALUE = "access_token_value";
-    private static final String PREF_ACCESS_TOKEN_EXPIRATION_TIME = "access_token_expiration_time";
-
     private String ris1 = null;
     private String ris2 = null;
     private String ris3 = null;
@@ -65,7 +64,6 @@ public class Recorder {
 
     private short[] audioData = null; // Campioni audio PCM, 16bit
     private AudioRecord audioRecord = null;
-    private InputStream is;
 
 
     public Recorder(Activity activity, IRecordingDone iRecordingDone, int recordingLength, int Fs, Context c) {
@@ -77,20 +75,6 @@ public class Recorder {
         this.audioData = new short[this.nSamples];
         this.c = c;
 
-
-
-        languageList.add("es-ES");
-        languageList.add("it-IT");
-        languageList.add("en-GB");
-        languageList.add("en-US");
-        languageList.add("ja-JP");
-        languageList.add("de-DE");
-        languageList.add("fr-FR");
-        languageList.add("pt-PT");
-        languageList.add("el-GR");
-        languageList.add("nl-NL");
-        languageList.add("ar-SA");
-        languageList.add("ru-RU");
 
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity,
@@ -130,7 +114,7 @@ public class Recorder {
             public void run() {
                 //doinbackground
                 byte[] datab = doRecording();
-                ArrayList<String> lans = new ArrayList<String>();
+
 
                 activity.runOnUiThread(new Runnable() {
                     @Override
@@ -138,17 +122,16 @@ public class Recorder {
                         // onpostexecute
                         audioRecord.stop();
 
-                        InputStream[] is = new InputStream[3];
+                        //InputStream[] is = new InputStream[3];
+                        BufferedReader[] is = new BufferedReader[3];
+
                         int i=0;
                         for (String lan : MainActivity.lang){
                             try {
-                                is[i] = am.open("parole/"+cartella+"/" + lan + ".wav");
+                                //is[i] = new InputStream(am.open("parole/"+cartella+"/" + lan + ".wav"));//wav
+                                BufferedReader reader = new BufferedReader(new InputStreamReader(am.open("parole/"+cartella+"/" + lan + ".txt")));
+                                is[i]=reader;
                                 i++;
-                                for(String language : languageList)
-                                    if(language.contains(lan.toUpperCase(Locale.ROOT))) {
-                                        lans.add(language);
-                                        break;
-                                    }
                                 if(i==3)
                                     break;
                             } catch (IOException ignored) {
@@ -156,24 +139,27 @@ public class Recorder {
                             }
                         }
 
-
-                        byte[] primo=null;
-                        byte[] secondo=null;
-                        byte[] terzo=null;
+                        //byte[] per i file wav
+                        String primo=null;
+                        String secondo=null;
+                        String terzo=null;
 
 
                         try {
-                            primo = readFully(is[0]);
+                            //primo = readFully(is[0]);
+                            primo = is[0].readLine();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                         try {
-                            secondo = readFully(is[1]);
+                            //secondo = readFully(is[1]);
+                            secondo = is[1].readLine();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                         try {
-                            terzo = readFully(is[2]);
+                            //terzo = readFully(is[2]);
+                            terzo = is[2].readLine();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -181,22 +167,23 @@ public class Recorder {
                         String voce = null;
 
 
-                        try {
+                        try{
+                            neuralInt n = new neuralInt();
+                            voce = n.recognize(datab,c);
 
-                            voce = speech_services.transcribeMultiLanguage(datab,lans);
-                            ris1 = speech_services.transcribeMultiLanguage(primo,lans);
-                            ris2 = speech_services.transcribeMultiLanguage(secondo,lans);
-                            ris3 = speech_services.transcribeMultiLanguage(terzo,lans);
+                            Log.e(TAG,voce);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+
                         int result = -1;
+
                         if(voce!=null){
-                            if(voce == ris1)
+                            if(voce.equals(primo))
                                 result = 0;
-                            else if(voce == ris2)
+                            else if(voce.equals(secondo))
                                 result = 1;
-                            else if(voce == ris3)
+                            else if(voce.equals(terzo))
                                 result = 2;
                         }
 
@@ -215,25 +202,42 @@ public class Recorder {
 
 
     //intelligenza artificiale https://www.fon.hum.uva.nl/praat/
-   /* private float similarity(byte[] registrazione, byte[] corretto){
+   /* private float similarity(){
 
-        //TODO inizializzarli
-        Wave w1 = new Wave(new WaveHeader(),registrazione);
-        Wave w2 = new Wave(new WaveHeader(),corretto);
+        CustomModelDownloadConditions conditions = new CustomModelDownloadConditions.Builder()
+    .requireWifi()
+    .build();
+FirebaseModelDownloader.getInstance()
+    .getModel("polyquiz-1", DownloadType.LOCAL_MODEL, conditions)
+    .addOnSuccessListener(new OnSuccessListener<CustomModel>() {
+      @Override
+      public void onSuccess(CustomModel model) {
+        // Download complete. Depending on your app, you could enable
+        // the ML feature, or switch from the local model to the remote
+        // model, etc.
+         File modelFile = model.getFile();
+        if (modelFile != null) {
+            interpreter = new Interpreter(modelFile);
 
 
-        FingerprintSimilarity fpsc1 = w2.getFingerprintSimilarity(w1);
-
-        float scorec = fpsc1.getScore();
-        float simc= fpsc1.getSimilarity();
-
-        Log.e(TAG,"score: "+scorec+" similarity: "+simc);
 
 
-
-
-
-        return -1;
+            modelOutput.rewind();
+FloatBuffer probabilities = modelOutput.asFloatBuffer();
+try {
+    BufferedReader reader = new BufferedReader(
+            new InputStreamReader(getAssets().open("custom_labels.txt")));
+    for (int i = 0; i < probabilities.capacity(); i++) {
+        String label = reader.readLine();
+        float probability = probabilities.get(i);
+        Log.i(TAG, String.format("%s: %1.4f", label, probability));
+    }
+} catch (IOException e) {
+    // File not found?
+}
+        }
+      }
+    });
     }*/
 
     private byte[] doRecording(){

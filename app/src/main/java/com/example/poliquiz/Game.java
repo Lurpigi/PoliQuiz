@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -34,6 +35,7 @@ import java.util.Collections;
 
 import asyncs.Recorder;
 import interfaces.IRecordingDone;
+import mffc.neuralInt;
 
 
 public class Game extends AppCompatActivity implements IRecordingDone {
@@ -71,8 +73,8 @@ public class Game extends AppCompatActivity implements IRecordingDone {
     ConditionVariable wait = null;
 
 
-    private final int recordinLength = 2; // 5 secondi
-    private final int Fs = 44100; //Hz
+    private final int recordinLength = 1; // 5 secondi
+    private final int Fs = 16000; //Hz
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,12 +93,13 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         flag3 = findViewById(R.id.thirdFlag);
         flags = new ImageView[]{flag1, flag2, flag3};
         time = findViewById(R.id.time);
-        iscertificate = getResources().openRawResource(R.raw.credential);
+
 
         editor = this.getPreferences(this.MODE_PRIVATE).edit();
 
         Intent _intent = getIntent();
         allToFalse();
+
 
 
         bttPlay.setOnClickListener(view -> onButtonClick());
@@ -135,6 +138,9 @@ public class Game extends AppCompatActivity implements IRecordingDone {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
+                Intent _i = new Intent();
+                _i.putExtra(getString(R.string.passpunt), String.valueOf(punteggio));
+                setResult(Activity.RESULT_OK, _i);
                 finish();
             }
         });
@@ -200,7 +206,6 @@ public class Game extends AppCompatActivity implements IRecordingDone {
                     int i=0;
                     for (String lan : MainActivity.lang){
                         try {
-                            is = am.open("parole/"+s+"/"+lan+".wav");
                             InputStream istmp = am.open("bandiere/"+lan+".png");
                             Bitmap f = BitmapFactory.decodeStream(istmp);
                             flags[i].setImageBitmap(f);
@@ -250,6 +255,8 @@ public class Game extends AppCompatActivity implements IRecordingDone {
                     String sec = String.format("%02d:%02d", ((millisUntilFinished / 1000) / 60), ((millisUntilFinished / 1000) % 60));
 
                     time.setText(sec);
+                    if(fine)
+                        cancel();
                     //here you can have your logic to set text to edittext
                 }
 
@@ -274,12 +281,13 @@ public class Game extends AppCompatActivity implements IRecordingDone {
 
                     }
                     Log.i(TAG,"finito");
+                    fine=true;
 
                     Game.this.runOnUiThread(new Runnable() {
                         public void run() {
 
                             editor.putInt(getString(R.string.saved_high_score_key), punteggio);
-                            editor.apply();
+                            editor.commit();
 
                             //Toast.makeText(Game.this, "Gioco finito", Toast.LENGTH_SHORT).show();
                             bttPlay.setEnabled(false);
