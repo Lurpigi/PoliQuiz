@@ -223,6 +223,43 @@ a trimmed down version that most wav files adhere to.
         return true; // this should probably be something more descriptive
     }
 
+
+
+    // write out the wav file
+    public boolean saveInt(FileOutputStream outFile)
+    {
+        try
+        {
+            String a = "RIFF";
+            String b = "WAVE";
+            String c = "fmt ";
+            String d = "data";
+
+            // write the wav file per the wav file format
+            outFile.write(a.getBytes());					// 00 - RIFF
+            outFile.write(intToByteArray((int)myChunkSize), 0, 4);		// 04 - how big is the rest of this file?
+            outFile.write(b.getBytes());					// 08 - WAVE
+            outFile.write(c.getBytes());					// 12 - fmt
+            outFile.write(intToByteArray((int)mySubChunk1Size), 0, 4);	// 16 - size of this chunk
+            outFile.write(shortToByteArray((short)myFormat), 0, 2);		// 20 - what is the audio format? 1 for PCM = Pulse Code Modulation
+            outFile.write(shortToByteArray((short)myChannels), 0, 2);	// 22 - mono or stereo? 1 or 2?  (or 5 or ???)
+            outFile.write(intToByteArray((int)mySampleRate), 0, 4);		// 24 - samples per second (numbers per second)
+            outFile.write(intToByteArray((int)myByteRate), 0, 4);		// 28 - bytes per second
+            outFile.write(shortToByteArray((short)myBlockAlign), 0, 2);	// 32 - # of bytes in one sample, for all channels
+            outFile.write(shortToByteArray((short)myBitsPerSample), 0, 2);	// 34 - how many bits in a sample(number)?  usually 16 or 24
+            outFile.write(d.getBytes());					// 36 - data
+            outFile.write(intToByteArray((int)myDataSize), 0, 4);		// 40 - how big is this data chunk
+            outFile.write(myData);						// 44 - the actual data itself - just a long string of numbers
+        }
+        catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+            return false;
+        }
+
+        return true;
+    }
+
     // write out the wav file
     public boolean save()
     {

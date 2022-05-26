@@ -10,28 +10,25 @@ import android.content.res.AssetManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.os.Build;
+import android.os.ConditionVariable;
 import android.os.Environment;
 import android.util.Log;
 
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 
 
 import com.example.poliquiz.MainActivity;
-import com.google.cloud.speech.v1.RecognitionAudio;
-import com.google.cloud.speech.v1.RecognitionConfig;
-import com.google.cloud.speech.v1.RecognizeResponse;
-import com.google.cloud.speech.v1.SpeechClient;
-import com.google.cloud.speech.v1.SpeechRecognitionAlternative;
-import com.google.cloud.speech.v1.SpeechRecognitionResult;
 
-import com.google.protobuf.ByteString;
 
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -40,8 +37,7 @@ import java.util.Locale;
 
 import Wave.WavIO;
 import interfaces.IRecordingDone;
-import mffc.neuralInt;
-import speech_services.Speech_Services;
+
 
 
 public class Recorder {
@@ -64,6 +60,7 @@ public class Recorder {
 
     private Activity activity;
     private IRecordingDone iRecordingDone;
+    ConditionVariable waitreq = null;
     ArrayList<String> languageList = new ArrayList<>();
 
 
@@ -79,6 +76,7 @@ public class Recorder {
         this.nSamples = this.recordingLenth * this.Fs;
         this.audioData = new short[this.nSamples];
         this.c = c;
+        waitreq = new ConditionVariable();
 
 
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
@@ -97,7 +95,6 @@ public class Recorder {
 
     public void go(String cartella,AssetManager am){
 
-        Speech_Services speech_services = new Speech_Services(languageList,c);
 
 
         new Thread(new Runnable() {
@@ -108,6 +105,7 @@ public class Recorder {
 
 
                 activity.runOnUiThread(new Runnable() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
                     @Override
                     public void run() {
                         // onpostexecute
@@ -155,35 +153,51 @@ public class Recorder {
                             e.printStackTrace();
                         }
 
-                        String voce = null;
+                        final String[] voce = {null};
 
 
                         try{
                             // datab in WAV
-                            String _storeDir = Environment.getExternalStorageDirectory() + "/" + PATH;
-                            File f = new File(_storeDir);
-                            if(!f.exists())
-                                if(!f.mkdir())
-                                    Log.e(TAG,"Creazione cartella "+PATH+" non riuscita");
-                            String _fullPath = _storeDir + "/" + FILE_NAME;
-                            WavIO wavIo = new WavIO(_fullPath, 16, 1, 1, Fs, 2, 16, datab);
-                            wavIo.save();
+                            String filename = "myrec";
+                            try (FileOutputStream fos = c.openFileOutput(filename, Context.MODE_PRIVATE)) {
+                                WavIO wavIo = new WavIO("_fullPath", 16, 1, 1, Fs, 2, 16, datab);
+                                wavIo.saveInt(fos);
+                                Log.i(TAG,"Creazione file riuscita");
+                            }
+
+                            File file = new File(c.getFilesDir(), filename);
+                            waitreq.close();
+                            Thread gfgThread = new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try  {
+                                        voce[0] = Request.newR(file);
+                                        //Thread.sleep(100);
+                                        waitreq.open();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        waitreq.open();
+                                    }
+                                }
+                            });
+                            gfgThread.start();
+                            waitreq.block();
 
                             // chiamarci classe request
                             //
-                            Log.e(TAG,voce);
+                            Log.e(TAG, voce[0]);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
 
                         int result = -1;
 
-                        if(voce!=null){
-                            if(voce.equals(primo))
+                        if(voce[0] !=null){
+                            if(voce[0].equals(primo))
                                 result = 0;
-                            else if(voce.equals(secondo))
+                            else if(voce[0].equals(secondo))
                                 result = 1;
-                            else if(voce.equals(terzo))
+                            else if(voce[0].equals(terzo))
                                 result = 2;
                         }
 

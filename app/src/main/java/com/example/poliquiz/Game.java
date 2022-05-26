@@ -36,7 +36,7 @@ import java.util.Collections;
 
 import asyncs.Recorder;
 import interfaces.IRecordingDone;
-import mffc.neuralInt;
+
 
 
 public class Game extends AppCompatActivity implements IRecordingDone {
@@ -66,7 +66,6 @@ public class Game extends AppCompatActivity implements IRecordingDone {
     private TextView ttvStato1 = null;
     private TextView ttvStato2 = null;
     private TextView ttvStato3 = null;
-    private InputStream iscertificate;
     private boolean pri = false;
     private boolean sec = false;
     private boolean ter = false;
@@ -78,7 +77,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
     };
 
 
-    private final int recordinLength = 1; // 5 secondi
+    private final int recordinLength = 2; // 5 secondi
     private final int Fs = 16000; //Hz
 
     @Override
