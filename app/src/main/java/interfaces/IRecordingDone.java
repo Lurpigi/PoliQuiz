@@ -5,5 +5,5 @@ public interface IRecordingDone {
     //0 - ha indovinato la prima
     //1 ha indovinato la seconda
     //2 ha indovinato la terza
-    void onRecordingDone(int result, short[] audioData);
+    void onRecordingDone(int result, short[] audioData, String resultSt);
 }

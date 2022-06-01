@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.ConditionVariable;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 
 import androidx.annotation.RequiresApi;
@@ -23,6 +24,8 @@ import androidx.core.app.ActivityCompat;
 import com.example.poliquiz.MainActivity;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -33,7 +36,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import Wave.WavIO;
 import interfaces.IRecordingDone;
@@ -61,7 +66,6 @@ public class Recorder {
     private Activity activity;
     private IRecordingDone iRecordingDone;
     ConditionVariable waitreq = null;
-    ArrayList<String> languageList = new ArrayList<>();
 
 
     private short[] audioData = null; // Campioni audio PCM, 16bit
@@ -171,8 +175,30 @@ public class Recorder {
                                 @Override
                                 public void run() {
                                     try  {
-                                        voce[0] = Request.newR(file);
-                                        //Thread.sleep(100);
+                                        //voce[0] = Request.newR(file);
+
+                                        try {
+                                            // Set header
+                                            Map<String, String> headers = new HashMap<>();
+                                            headers.put("User-Agent", "Dalvik/2.1.0 (Linux; U; Android 12; LE2115 Build/SKQ1.210216.001)");
+                                            HttpPostMultipart multipart = new HttpPostMultipart("http://54.227.76.197/predict", "utf-8", headers);
+                                            // Add file
+                                            multipart.addFilePart("file", file);
+                                            // Print result
+                                            String response = multipart.finish();
+                                            try {
+                                                JSONObject jsonObject = new JSONObject(response);
+                                                voce[0]= jsonObject.getString("keyword");
+                                                Log.i(TAG,voce[0]);
+
+                                            }catch (JSONException err){
+                                                Log.e("Error", err.toString());
+                                            }
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+
                                         waitreq.open();
                                     } catch (Exception e) {
                                         e.printStackTrace();
@@ -183,9 +209,6 @@ public class Recorder {
                             gfgThread.start();
                             waitreq.block();
 
-                            // chiamarci classe request
-                            //
-                            Log.e(TAG, voce[0]);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -202,7 +225,7 @@ public class Recorder {
                         }
 
 
-                        iRecordingDone.onRecordingDone(result, audioData);
+                        iRecordingDone.onRecordingDone(result, audioData, voce[0]);
 
                     }
                 });

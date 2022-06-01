@@ -58,7 +58,7 @@ public class Request {
         } catch (ProtocolException e) {
             e.printStackTrace();
         }
-        //httpConn.setRequestProperty("Connection", "Keep-Alive");
+        httpConn.setRequestProperty("Connection", "Keep-Alive");
         //httpConn.setRequestProperty("Cache-Control", "no-cache");
         //httpConn.setRequestProperty("Authorization", "Bearer XXXXXXXXXXXXXXXXXXXXXX");
         httpConn.setRequestProperty("Content-Type", "audio/wav");
