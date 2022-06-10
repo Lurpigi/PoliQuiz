@@ -343,7 +343,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
     public void onRecordingDone(int result, short[] audioData, String resultS) {
         Log.i(TAG,"onRecordingDone");
         bttPlay.setBackground(getDrawable(R.drawable.ic_mic));
-        Toast.makeText(Game.this, "Parola riconosciuta: "+resultS, Toast.LENGTH_SHORT).show();
+        Toast.makeText(Game.this, resultS, Toast.LENGTH_SHORT).show();
 
         switch(result){            //risultato
             case 0:

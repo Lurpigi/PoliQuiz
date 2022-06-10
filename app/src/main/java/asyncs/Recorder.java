@@ -22,6 +22,7 @@ import androidx.core.app.ActivityCompat;
 
 
 import com.example.poliquiz.MainActivity;
+import com.example.poliquiz.R;
 
 
 import org.json.JSONException;
@@ -35,6 +36,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -178,23 +180,27 @@ public class Recorder {
                                         //voce[0] = Request.newR(file);
 
                                         try {
-                                            // Set header
-                                            Map<String, String> headers = new HashMap<>();
-                                            headers.put("User-Agent", "Dalvik/2.1.0 (Linux; U; Android 12; LE2115 Build/SKQ1.210216.001)");
-                                            HttpPostMultipart multipart = new HttpPostMultipart("http://54.227.76.197/predict", "utf-8", headers);
-                                            // Add file
-                                            multipart.addFilePart("file", file);
-                                            // Print result
-                                            String response = multipart.finish();
-                                            try {
-                                                JSONObject jsonObject = new JSONObject(response);
-                                                voce[0]= jsonObject.getString("keyword");
-                                                Log.i(TAG,voce[0]);
+                                            if(isInternetAvailable()) {
+                                                // Set header
+                                                Map<String, String> headers = new HashMap<>();
+                                                headers.put("User-Agent", "Dalvik/2.1.0 (Linux; U; Android 12; LE2115 Build/SKQ1.210216.001)");
+                                                HttpPostMultipart multipart = new HttpPostMultipart("http://54.227.76.197/predict", "utf-8", headers);
+                                                // Add file
+                                                multipart.addFilePart("file", file);
+                                                // Print result
+                                                String response = multipart.finish();
+                                                try {
+                                                    JSONObject jsonObject = new JSONObject(response);
+                                                    voce[0] = jsonObject.getString("keyword");
+                                                    Log.i(TAG, voce[0]);
 
-                                            }catch (JSONException err){
-                                                Log.e("Error", err.toString());
+                                                } catch (JSONException err) {
+                                                    Log.e("Error", err.toString());
+                                                }
                                             }
-
+                                            else{
+                                                voce[0] = c.getString(R.string.noInternet);
+                                            }
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
@@ -216,12 +222,18 @@ public class Recorder {
                         int result = -1;
 
                         if(voce[0] !=null){
-                            if(voce[0].equals(primo))
+                            if(voce[0].equals(primo)) {
                                 result = 0;
-                            else if(voce[0].equals(secondo))
+                                voce[0] = "Parola riconosciuta: " + voce[0];
+                            }
+                            else if(voce[0].equals(secondo)){
                                 result = 1;
-                            else if(voce[0].equals(terzo))
+                                voce[0] = "Parola riconosciuta: " + voce[0];
+                            }
+                            else if(voce[0].equals(terzo)){
                                 result = 2;
+                                voce[0] = "Parola riconosciuta: " + voce[0];
+                            }
                         }
 
 
@@ -233,49 +245,16 @@ public class Recorder {
         }).start();
     }
 
+    public boolean isInternetAvailable() {
+        try {
+            InetAddress ipAddr = InetAddress.getByName("google.com");
+            //You can replace it with your name
+            return !ipAddr.equals("");
 
-
-
-
-
-    //intelligenza artificiale https://www.fon.hum.uva.nl/praat/
-   /* private float similarity(){
-
-        CustomModelDownloadConditions conditions = new CustomModelDownloadConditions.Builder()
-    .requireWifi()
-    .build();
-FirebaseModelDownloader.getInstance()
-    .getModel("polyquiz-1", DownloadType.LOCAL_MODEL, conditions)
-    .addOnSuccessListener(new OnSuccessListener<CustomModel>() {
-      @Override
-      public void onSuccess(CustomModel model) {
-        // Download complete. Depending on your app, you could enable
-        // the ML feature, or switch from the local model to the remote
-        // model, etc.
-         File modelFile = model.getFile();
-        if (modelFile != null) {
-            interpreter = new Interpreter(modelFile);
-
-
-
-
-            modelOutput.rewind();
-FloatBuffer probabilities = modelOutput.asFloatBuffer();
-try {
-    BufferedReader reader = new BufferedReader(
-            new InputStreamReader(getAssets().open("custom_labels.txt")));
-    for (int i = 0; i < probabilities.capacity(); i++) {
-        String label = reader.readLine();
-        float probability = probabilities.get(i);
-        Log.i(TAG, String.format("%s: %1.4f", label, probability));
-    }
-} catch (IOException e) {
-    // File not found?
-}
+        } catch (Exception e) {
+            return false;
         }
-      }
-    });
-    }*/
+    }
 
     private byte[] doRecording(){
 
