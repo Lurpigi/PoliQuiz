@@ -72,9 +72,10 @@ public class Game extends AppCompatActivity implements IRecordingDone {
     private boolean fine = false;
     ConditionVariable wait = null;
     private String[] PERMISSIONS = new String[] {
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.RECORD_AUDIO
     };
+
+    private CountDownTimer timer;
 
 
     private final int recordinLength = 2; // 5 secondi
@@ -266,8 +267,9 @@ public class Game extends AppCompatActivity implements IRecordingDone {
             ttvStato2.setVisibility(View.VISIBLE);
             ttvStato3.setVisibility(View.VISIBLE);
             bttSkip.setVisibility(View.VISIBLE);
+
             //3 minuti -> 180 secondi
-            new CountDownTimer(180_000, 1000) {
+            timer = new CountDownTimer(180_000, 1000) {
 
                 public void onTick(long millisUntilFinished) {
                     String sec = String.format("%02d:%02d", ((millisUntilFinished / 1000) / 60), ((millisUntilFinished / 1000) % 60));
@@ -377,6 +379,9 @@ public class Game extends AppCompatActivity implements IRecordingDone {
 
     @Override
     protected void onDestroy() {
+
         super.onDestroy();
+        timer.cancel();
+
     }
 }
