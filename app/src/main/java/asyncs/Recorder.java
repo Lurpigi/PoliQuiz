@@ -63,7 +63,6 @@ public class Recorder {
     private String ris2 = null;
     private String ris3 = null;
     private String FILE_NAME ="Rec.wav";
-    private final String PATH = "CANCELLAMI";
 
     private Activity activity;
     private IRecordingDone iRecordingDone;
@@ -107,6 +106,7 @@ public class Recorder {
             @Override
             public void run() {
                 //doinbackground
+                //salviamo la registrazione in datab
                 byte[] datab = doRecording();
 
 
@@ -117,10 +117,10 @@ public class Recorder {
                         // onpostexecute
                         audioRecord.stop();
 
-                        //InputStream[] is = new InputStream[3];
                         BufferedReader[] is = new BufferedReader[3];
 
                         int i=0;
+                        //mi salvo i file txt in un buffer(che devono essere per forza 3)
                         for (String lan : MainActivity.lang){
                             try {
                                 //is[i] = new InputStream(am.open("parole/"+cartella+"/" + lan + ".wav"));//wav
@@ -134,26 +134,22 @@ public class Recorder {
                             }
                         }
 
-                        //byte[] per i file wav
                         String primo=null;
                         String secondo=null;
                         String terzo=null;
 
 
                         try {
-                            //primo = readFully(is[0]);
                             primo = is[0].readLine();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                         try {
-                            //secondo = readFully(is[1]);
                             secondo = is[1].readLine();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                         try {
-                            //terzo = readFully(is[2]);
                             terzo = is[2].readLine();
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -165,19 +161,20 @@ public class Recorder {
                         try{
                             // datab in WAV
                             String filename = "myrec";
+                            //salvo il file wav nella memoria interna dell' applicazione utilizzando un metodo modificato dalla classe WavIO
                             try (FileOutputStream fos = c.openFileOutput(filename, Context.MODE_PRIVATE)) {
                                 WavIO wavIo = new WavIO("_fullPath", 16, 1, 1, Fs, 2, 16, datab);
                                 wavIo.saveInt(fos);
                                 Log.i(TAG,"Creazione file riuscita");
                             }
-
+                            //recuper il file da inviare al server
                             File file = new File(c.getFilesDir(), filename);
+                            //condition variable per aspettare la risposta
                             waitreq.close();
                             Thread gfgThread = new Thread(new Runnable() {
                                 @Override
                                 public void run() {
                                     try  {
-                                        //voce[0] = Request.newR(file);
 
                                         try {
                                             if(isInternetAvailable()) {
@@ -190,6 +187,7 @@ public class Recorder {
                                                 // Print result
                                                 String response = multipart.finish();
                                                 try {
+                                                    //il server risponde con un file Json
                                                     JSONObject jsonObject = new JSONObject(response);
                                                     voce[0] = jsonObject.getString("keyword");
                                                     Log.i(TAG, voce[0]);
@@ -224,20 +222,18 @@ public class Recorder {
                         if(voce[0] !=null){
                             if(voce[0].equals(primo)) {
                                 result = 0;
-                                voce[0] = "Parola riconosciuta: " + voce[0];
                             }
                             else if(voce[0].equals(secondo)){
                                 result = 1;
-                                voce[0] = "Parola riconosciuta: " + voce[0];
                             }
                             else if(voce[0].equals(terzo)){
                                 result = 2;
-                                voce[0] = "Parola riconosciuta: " + voce[0];
                             }
                         }
+                        voce[0] = "Parola riconosciuta: " + voce[0];
 
 
-                        iRecordingDone.onRecordingDone(result, audioData, voce[0]);
+                        iRecordingDone.onRecordingDone(result, voce[0]);
 
                     }
                 });

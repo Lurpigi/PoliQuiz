@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         bttInfo = findViewById(R.id.bttInfo);
         Record = findViewById(R.id.tvRecord);
 
+        //mappa varibili interne, viene usata per salvare il record
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
 
 
@@ -84,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //quando finisce il gioco viene aggiornato il record
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode,resultCode,data);

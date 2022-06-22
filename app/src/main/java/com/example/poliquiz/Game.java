@@ -42,7 +42,6 @@ import interfaces.IRecordingDone;
 public class Game extends AppCompatActivity implements IRecordingDone {
 
 
-    private final int PERMISSIONS_REQUEST = 1;
     private static final String TAG = Game.class.getSimpleName();
     private Button bttPlay = null;
     private ImageButton bttSkip = null;
@@ -76,15 +75,17 @@ public class Game extends AppCompatActivity implements IRecordingDone {
     };
 
     private CountDownTimer timer;
+    private Thread turni;
 
 
-    private final int recordinLength = 2; // 5 secondi
-    private final int Fs = 16000; //Hz
+    private final int recordinLength = 1;
+    private final int Fs = 44100; //Hz
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game);
+        //inizializzazioni variabili
         am = this.getAssets();
         wait = new ConditionVariable();
         img = findViewById(R.id.img);
@@ -102,7 +103,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
 
         editor = this.getPreferences(this.MODE_PRIVATE).edit();
 
-        Intent _intent = getIntent();
+
         allToFalse();
 
 
@@ -110,6 +111,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         bttPlay.setOnClickListener(view -> onButtonClick());
     }
 
+    //inizializza le variabili di controllo e imposta i quadrati in rosso
     private void allToFalse(){
         pri = false;
         sec = false;
@@ -119,6 +121,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         ttvStato3.setBackgroundColor(getResources().getColor(R.color.red));
     }
 
+    //mostra il risultato a fine gioco e chiede se si vuole riprovare o tornare nella home
     public void showCustomDialog(int punteggio) {
         final Dialog dialog = new Dialog(this);
         //We have added a title in the custom layout. So let's disable the default title.
@@ -144,6 +147,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
             public void onClick(View view) {
                 dialog.dismiss();
                 Intent _i = new Intent();
+                //passiamo il punteggio finale alla mainactivity
                 _i.putExtra(getString(R.string.passpunt), String.valueOf(punteggio));
                 setResult(Activity.RESULT_OK, _i);
                 finish();
@@ -164,7 +168,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
     }
 
 
-
+    //quando si clicca play viene controllato se sono stati concessi i permessi di registrazione audio e solo in quel caso viene avviato il gioco
     private void onButtonClick() {
         if (!hasPermissions(Game.this,PERMISSIONS)) {
             ActivityCompat.requestPermissions(Game.this,PERMISSIONS,1);
@@ -173,6 +177,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
             onRecordAudioPermissionGranted();
     }
 
+    //controllo dei permessi
     private boolean hasPermissions(Context context, String... PERMISSIONS) {
         if (context != null && PERMISSIONS != null)
             for (String permission: PERMISSIONS)
@@ -181,6 +186,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         return true;
     }
 
+    //se si accettano i permessi parte il gioco
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -202,6 +208,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         }
     }
 
+    //ordina casualmente le parole
     private ArrayList<String> randomP(){
         ArrayList<String> random = new ArrayList<String>();
 
@@ -211,18 +218,22 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         return random;
     }
 
+
+    //impostiamo le variabili del gioco per questa parola del turno
+    //string S -> nome parola del turno(quindi anche della cartella)
     private void setEnv(String s){
         cartella = s;
-
         runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
                 try {
+                    //impostiamo immagine
                     InputStream is = am.open("parole/"+s+"/"+s+".jpg");
 
                     Bitmap b = BitmapFactory.decodeStream(is);
                     int i=0;
+                    //ciclo per salvarsi l immagine delle bandiere (possibilita di espansione)
                     for (String lan : MainActivity.lang){
                         try {
                             InputStream istmp = am.open("bandiere/"+lan+".png");
@@ -258,6 +269,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         Recorder recorder = new Recorder(this, this, recordinLength, Fs, this);
         if(recorder.isAudioRecordInitialized()){
             Log.i(TAG,"creato oggetto recorder");
+            //rendo visibile tutti gli elementi e cambio l' onclick di play
             ArrayList<String> parolepartita = randomP();
             bttSkip.setOnClickListener(view -> onClickskip());
             bttPlay.setOnClickListener(view -> onClickGame(recorder));
@@ -288,14 +300,14 @@ public class Game extends AppCompatActivity implements IRecordingDone {
 
             }.start();
 
-            new Thread(new Runnable() {                                         //gioco
+            turni = new Thread(new Runnable() {                                         //gioco
                 @Override
                 public void run() {
                     for (int i = 0; i < parolepartita.size(); i++) {
                         setEnv(parolepartita.get(i));
-                        wait.close();
+                        wait.close();   //chiudo wait
                         allToFalse();
-                        wait.block();
+                        wait.block();   //blocco finche wait != open
                         if(fine)
                             break;
 
@@ -316,7 +328,8 @@ public class Game extends AppCompatActivity implements IRecordingDone {
                         }
                     });
                 }
-            }).start();
+            });
+            turni.start();
 
         }
     }
@@ -340,7 +353,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
 
     //fine recording
     @Override
-    public void onRecordingDone(int result, short[] audioData, String resultS) {
+    public void onRecordingDone(int result, String resultS) {
         Log.i(TAG,"onRecordingDone");
         bttPlay.setBackground(getDrawable(R.drawable.ic_mic));
         Toast.makeText(Game.this, resultS, Toast.LENGTH_SHORT).show();
@@ -370,8 +383,10 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         }
         bttPlay.setEnabled(true);
         bttSkip.setEnabled(true);
-        if(pri && sec && ter)
+        if(pri && sec && ter) {
             wait.open();
+            Toast.makeText(Game.this,getString(R.string.turnofatto) , Toast.LENGTH_LONG).show();
+        }
     }
 
 
@@ -382,6 +397,7 @@ public class Game extends AppCompatActivity implements IRecordingDone {
 
         super.onDestroy();
         timer.cancel();
+        turni.interrupt();
 
     }
 }
