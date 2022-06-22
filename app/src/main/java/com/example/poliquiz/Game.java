@@ -54,7 +54,6 @@ public class Game extends AppCompatActivity implements IRecordingDone {
     private String cartella = null;
     //private volatile boolean skip = false;
     private int punteggio = 0;
-    SharedPreferences.Editor editor;
     private AssetManager am;
     private ImageView img = null;
     private TextView time = null;
@@ -101,7 +100,6 @@ public class Game extends AppCompatActivity implements IRecordingDone {
         time = findViewById(R.id.time);
 
 
-        editor = this.getPreferences(this.MODE_PRIVATE).edit();
 
 
         allToFalse();
@@ -318,8 +316,6 @@ public class Game extends AppCompatActivity implements IRecordingDone {
                     Game.this.runOnUiThread(new Runnable() {
                         public void run() {
 
-                            editor.putInt(getString(R.string.saved_high_score_key), punteggio);
-                            editor.commit();
 
                             //Toast.makeText(Game.this, "Gioco finito", Toast.LENGTH_SHORT).show();
                             bttPlay.setEnabled(false);
